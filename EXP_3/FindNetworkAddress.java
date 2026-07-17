@@ -17,5 +17,7 @@ public class FindNetworkAddress {
 
         System.out.print("newtork address = ");
         System.out.println(nwaddress);
+
+        ip1.displayDetails();
     }
 }
