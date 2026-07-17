@@ -128,39 +128,63 @@ public class IPAddress {
         System.out.println("Last  : " + usable[1]);
     }
 
-    int getPrefixLength()
-    {
-        int prefix = 0;
+    char getIPClass() {
+        if (ip[0] >= 1 && ip[0] <= 126)
+            return 'A';
+        else if (ip[0] >= 128 && ip[0] <= 191)
+            return 'B';
+        else if (ip[0] >= 192 && ip[0] <= 223)
+            return 'C';
+        else
+            return 'X';   // Invalid for this assignment
+    }
 
-        for(int i =0;i<4;i++)
-        {
-            prefix+= Integer.bitCount(subnet[i]);
+    int defaultPrefix() {
+        switch (getIPClass()) {
+            case 'A':
+                return 8;
+            case 'B':
+                return 16;
+            case 'C':
+                return 24;
+            default:
+                return -1;
         }
+    }
+
+    int getPrefixLength() {
+        int prefix = 0;
+    
+        for (int i = 0; i < 4; i++) {
+            prefix += Integer.bitCount(subnet[i]);
+        }
+    
         return prefix;
     }
 
-    int numberOfBlocks()
-    {
-        int prefix = getPrefixLength();
+    int numberOfBlocks() {
 
-        if(prefix>24)
-        {
+        int prefix = getPrefixLength();
+        int defaultPrefix = defaultPrefix();
+    
+        if (prefix > defaultPrefix) {
+            System.out.println("Not a supernet.");
             return 1;
         }
-
-        return 1<< (24-prefix);
+    
+        return 1 << (defaultPrefix - prefix);
     }
+
 
     void displayBlocks() {
 
-        int prefix = getPrefixLength();
+        char ipClass = getIPClass();
+        int blocks = numberOfBlocks();
     
-        if (prefix > 24) {
-            System.out.println("\nNot a supernet.");
+        if (blocks == 1) {
+            System.out.println("\nNot a Supernet.");
             return;
         }
-    
-        int blocks = numberOfBlocks();
     
         IPAddress network = calculateNWAddress();
     
@@ -169,20 +193,49 @@ public class IPAddress {
     
         for (int i = 0; i < blocks; i++) {
     
-            int thirdOctet = network.ip[2] + i;
+            int[] start = Arrays.copyOf(network.ip, 4);
+            int[] end = Arrays.copyOf(network.ip, 4);
+    
+            switch (ipClass) {
+    
+                case 'A':
+                    start[0] = network.ip[0] + i;
+                    start[1] = 0;
+                    start[2] = 0;
+                    start[3] = 0;
+    
+                    end[0] = network.ip[0] + i;
+                    end[1] = 255;
+                    end[2] = 255;
+                    end[3] = 255;
+                    break;
+    
+                case 'B':
+                    start[1] = network.ip[1] + i;
+                    start[2] = 0;
+                    start[3] = 0;
+    
+                    end[1] = network.ip[1] + i;
+                    end[2] = 255;
+                    end[3] = 255;
+                    break;
+    
+                case 'C':
+                    start[2] = network.ip[2] + i;
+                    start[3] = 0;
+    
+                    end[2] = network.ip[2] + i;
+                    end[3] = 255;
+                    break;
+            }
     
             System.out.println(
-                "Block " + (i + 1) + " : " +
-                network.ip[0] + "." +
-                network.ip[1] + "." +
-                thirdOctet + ".0  -  " +
-                network.ip[0] + "." +
-                network.ip[1] + "." +
-                thirdOctet + ".255"
-            );
+                    "Block " + (i + 1) + " : "
+                            + start[0] + "." + start[1] + "." + start[2] + "." + start[3]
+                            + "  -  "
+                            + end[0] + "." + end[1] + "." + end[2] + "." + end[3]);
         }
     }
-
     @Override
     public String toString() {
         return "IP: " + ip[0] + "." + ip[1] + "." + ip[2] + "." + ip[3] +

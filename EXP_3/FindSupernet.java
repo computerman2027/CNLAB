@@ -15,6 +15,6 @@ public class FindSupernet {
 
         ip1.displayDetails();
 
-        
+        ip1.displayBlocks();
     }
 }
