@@ -38,6 +38,13 @@ public class IPAddress {
         }
     }
 
+    void calculateWildCardMask()
+    {
+        for (int i = 0; i < 4; i++) {
+            this.wildcardMask[i] = 255 - this.subnet[i];
+        }
+    }
+
     public IPAddress(IPAddress other) {
         this.ip = Arrays.copyOf(other.ip, 4);
         this.subnet = Arrays.copyOf(other.subnet, 4);
@@ -279,6 +286,94 @@ public class IPAddress {
                             + end[0] + "." + end[1] + "." + end[2] + "." + end[3]);
         }
     }
+    
+    static int nextPowerOf2(int x) {
+        int ans = 1;
+        while (ans < x)
+            ans <<= 1;
+        return ans;
+    }
+
+    static int log2(int n) {
+        int ans = 0;
+        while (n > 1) {
+            n /= 2;
+            ans++;
+        }
+        return ans;
+    }
+    
+    static String prefixToMask(int prefix) {
+        int[] mask = new int[4];
+    
+        for (int i = 0; i < 4; i++) {
+            int bits = Math.min(prefix, 8);
+    
+            if (bits == 0)
+                mask[i] = 0;
+            else
+                mask[i] = 256 - (1 << (8 - bits));
+    
+            prefix -= bits;
+        }
+    
+        return mask[0] + "." + mask[1] + "." + mask[2] + "." + mask[3];
+    }
+    
+    static IPAddress[] createSubnetworks(IPAddress original, int subnetCount) {
+
+        subnetCount = nextPowerOf2(subnetCount);
+    
+        int defaultPrefix = original.defaultPrefix();
+    
+        int borrowedBits = log2(subnetCount);
+    
+        int newPrefix = defaultPrefix + borrowedBits;
+    
+        String newMask = prefixToMask(newPrefix);
+    
+        // Create first subnet
+        IPAddress first = new IPAddress(
+                original.ip[0] + "." + original.ip[1] + "." +
+                original.ip[2] + "." + original.ip[3],
+                newMask);
+    
+        first = first.calculateNWAddress();
+    
+        IPAddress[] subnets = new IPAddress[subnetCount];
+    
+        subnets[0] = first;
+        subnets[0].calculateWildCardMask();
+    
+        int hostsPerSubnet = first.totalAddresses();
+    
+        for (int i = 1; i < subnetCount; i++) {
+    
+            IPAddress next = new IPAddress(subnets[i - 1]);
+    
+            int increment = hostsPerSubnet;
+    
+            while (increment > 0) {
+    
+                next.ip[3]++;
+    
+                for (int j = 3; j > 0; j--) {
+                    if (next.ip[j] > 255) {
+                        next.ip[j] = 0;
+                        next.ip[j - 1]++;
+                    }
+                }
+    
+                increment--;
+            }
+    
+            subnets[i] = next;
+            // subnets[i].calculateWildCardMask();
+        }
+    
+        return subnets;
+    }
+    
     @Override
     public String toString() {
         return "IP: " + ip[0] + "." + ip[1] + "." + ip[2] + "." + ip[3] +
