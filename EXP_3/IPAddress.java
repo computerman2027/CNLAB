@@ -128,6 +128,61 @@ public class IPAddress {
         System.out.println("Last  : " + usable[1]);
     }
 
+    int getPrefixLength()
+    {
+        int prefix = 0;
+
+        for(int i =0;i<4;i++)
+        {
+            prefix+= Integer.bitCount(subnet[i]);
+        }
+        return prefix;
+    }
+
+    int numberOfBlocks()
+    {
+        int prefix = getPrefixLength();
+
+        if(prefix>24)
+        {
+            return 1;
+        }
+
+        return 1<< (24-prefix);
+    }
+
+    void displayBlocks() {
+
+        int prefix = getPrefixLength();
+    
+        if (prefix > 24) {
+            System.out.println("\nNot a supernet.");
+            return;
+        }
+    
+        int blocks = numberOfBlocks();
+    
+        IPAddress network = calculateNWAddress();
+    
+        System.out.println("\nNumber of Blocks : " + blocks);
+        System.out.println("\nBlock Ranges:");
+    
+        for (int i = 0; i < blocks; i++) {
+    
+            int thirdOctet = network.ip[2] + i;
+    
+            System.out.println(
+                "Block " + (i + 1) + " : " +
+                network.ip[0] + "." +
+                network.ip[1] + "." +
+                thirdOctet + ".0  -  " +
+                network.ip[0] + "." +
+                network.ip[1] + "." +
+                thirdOctet + ".255"
+            );
+        }
+    }
+
     @Override
     public String toString() {
         return "IP: " + ip[0] + "." + ip[1] + "." + ip[2] + "." + ip[3] +

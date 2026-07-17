@@ -1,7 +1,7 @@
-import java.util.*;
+import java.util.Scanner;
 
-public class FindNetworkAddress {
-
+public class FindSupernet {
+    
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
 
@@ -13,9 +13,8 @@ public class FindNetworkAddress {
 
         IPAddress ip1 = new IPAddress(inputIp,subnetMask);
 
-        IPAddress nwaddress = ip1.calculateNWAddress();
+        ip1.displayDetails();
 
-        System.out.print("newtork address = ");
-        System.out.println(nwaddress);
+        
     }
 }
