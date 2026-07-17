@@ -44,6 +44,34 @@ public class IPAddress {
         this.wildcardMask = Arrays.copyOf(other.wildcardMask, 4);
     }
 
+    String toBinaryIP()
+    {
+        String binary="";
+
+        for(int i =0;i<4;i++)
+        {
+            String temp = String.format("%8s", Integer.toBinaryString(ip[i])).replace(' ', '0');
+            binary=binary+temp;
+            if(i<3)
+            binary=binary+".";
+        }
+        return binary;
+    }
+
+    String toBinarySubnet()
+    {
+        String binary="";
+
+        for(int i =0;i<4;i++)
+        {
+            String temp = String.format("%8s", Integer.toBinaryString(subnet[i])).replace(' ', '0');
+            binary=binary+temp;
+            if(i<3)
+            binary=binary+".";
+        }
+        return binary;
+    }
+
     IPAddress calculateNWAddress() {
         IPAddress ans = new IPAddress();
 
@@ -190,7 +218,6 @@ public class IPAddress {
     
         return 1 << (defaultPrefix - prefix);
     }
-
 
     void displayBlocks() {
 
