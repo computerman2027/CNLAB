@@ -1,45 +1,45 @@
 import java.util.*;
 
-class IPAddress {
-    int[] ip;
-    int[] subnet;
+// class IPAddress {
+//     int[] ip;
+//     int[] subnet;
 
-    public IPAddress() {
-        ip = new int[4];
-        subnet = new int[4];
-    }
+//     public IPAddress() {
+//         ip = new int[4];
+//         subnet = new int[4];
+//     }
 
-    public IPAddress(String ip, String subnet) {
-        this.ip = new int[4];
-        this.subnet = new int[4];
+//     public IPAddress(String ip, String subnet) {
+//         this.ip = new int[4];
+//         this.subnet = new int[4];
 
-        String[] iparr = ip.split("\\.");
-        String[] subnetarr = subnet.split("\\.");
+//         String[] iparr = ip.split("\\.");
+//         String[] subnetarr = subnet.split("\\.");
 
-        for (int i = 0; i < 4; i++) {
-            this.ip[i] = Integer.parseInt(iparr[i]);
-            this.subnet[i] = Integer.parseInt(subnetarr[i]);
-        }
-    }
+//         for (int i = 0; i < 4; i++) {
+//             this.ip[i] = Integer.parseInt(iparr[i]);
+//             this.subnet[i] = Integer.parseInt(subnetarr[i]);
+//         }
+//     }
 
-    IPAddress calculateNWAddress() {
-        IPAddress ans = new IPAddress();
+//     IPAddress calculateNWAddress() {
+//         IPAddress ans = new IPAddress();
 
-        for (int i = 0; i < 4; i++) {
-            ans.ip[i] = this.ip[i] & this.subnet[i];
-            ans.subnet[i] = this.subnet[i];
-        }
+//         for (int i = 0; i < 4; i++) {
+//             ans.ip[i] = this.ip[i] & this.subnet[i];
+//             ans.subnet[i] = this.subnet[i];
+//         }
 
-        return ans;
-    }
+//         return ans;
+//     }
 
-    @Override
-    public String toString() {
-        return "IP: " + ip[0] + "." + ip[1] + "." + ip[2] + "." + ip[3] +
-                "\nSubnet: " + subnet[0] + "." + subnet[1] + "." + subnet[2] + "." + subnet[3];
-    }
+//     @Override
+//     public String toString() {
+//         return "IP: " + ip[0] + "." + ip[1] + "." + ip[2] + "." + ip[3] +
+//                 "\nSubnet: " + subnet[0] + "." + subnet[1] + "." + subnet[2] + "." + subnet[3];
+//     }
 
-}
+// }
 
 public class FindNetworkAddress {
 
