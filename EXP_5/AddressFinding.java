@@ -10,7 +10,7 @@ public class AddressFinding {
         try{
             InetAddress localIp = InetAddress.getLocalHost();
             System.out.println("local host address = "+ localIp.getHostAddress());
-            System.out.println("local host name = "+ localIp.getHostAddress());
+            System.out.println("local host name = "+ localIp.getHostName());
         }
         catch (UnknownHostException e)
         {
@@ -24,7 +24,7 @@ public class AddressFinding {
             String serverName = sc.next();
             InetAddress localIp = InetAddress.getByName(serverName);
             System.out.println("local host address = "+ localIp.getHostAddress());
-            System.out.println("local host name = "+ localIp.getHostAddress());
+            System.out.println("local host name = "+ localIp.getHostName());
         }
         catch (UnknownHostException e)
         {
